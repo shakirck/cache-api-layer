@@ -22,7 +22,9 @@
     "build": "npm run clean && tsc",
     "clean": "rm -rf build",
     "serve": "npm run build && npm run start",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "vercel-build": "npm run build"
+
   },
   "keywords": [],
   "author": "",
