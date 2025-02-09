@@ -1,36 +1,48 @@
-// src/services/cache.service.ts
-
 import { CacheEntry, CacheStore } from '../types/cache.type';
 
 export class CacheService {
     private static instance: CacheService;
     private store: CacheStore;
-
-    private constructor() {
+    private size: number;
+    
+    private constructor(size: number) {
         this.store = {};
+        this.size = size;
     }
 
     public static getInstance(): CacheService {
         if (!CacheService.instance) {
-            CacheService.instance = new CacheService();
+            CacheService.instance = new CacheService(3); 
         }
         return CacheService.instance;
     }
 
-    public async set(key: string, value: any, ttl?: number): Promise<void> {
-        console.log(key , value , ttl)
+    private getCurrentSize(): number {
+        return Object.keys(this.store).length;
+    }
+
+    public async set(key: string, value: any, ttl?: number): Promise<{ success: boolean; error?: string }> {
+        if (key in this.store) {
+            this.store[key] = {
+                value,
+                timestamp: Date.now()
+            };
+            return { success: true };
+        }
+
+        if (this.getCurrentSize() >= this.size) {
+            return {
+                success: false,
+                error: `Cache is full. Maximum size of ${this.size} reached. Remove some entries before adding new ones.`
+            };
+        }
+
         this.store[key] = {
             value,
             timestamp: Date.now()
         };
 
-        console.log(this.store)
-
-        // if (ttl) {
-        //     setTimeout(() => {
-        //         this.delete(key);
-        //     }, ttl * 1000);
-        // }
+        return { success: true };
     }
 
     public async get(key: string): Promise<CacheEntry | null> {
@@ -44,11 +56,26 @@ export class CacheService {
         }
         return false;
     }
-    public async getall():Promise<any> {
-        return this.store
+
+    public async getall(): Promise<CacheStore> {
+        return this.store;
     }
 
     public async has(key: string): Promise<boolean> {
         return key in this.store;
     }
+
+    public async getCacheSize(): Promise<number> {
+        return this.getCurrentSize();
+    }
+
+    public async getMaxSize(): Promise<number> {
+        return this.size;
+    }
+
+    public async all(): Promise<any> {
+        return this.store;
+    }
+
+    
 }

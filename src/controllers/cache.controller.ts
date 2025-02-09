@@ -1,5 +1,3 @@
-// src/controllers/cache.controller.ts
-
 import { Request, Response } from 'express';
 import { CacheService } from '../services/cache.service';
 
@@ -18,7 +16,13 @@ export class CacheController {
             return;
         }
 
-        await this.cacheService.set(key, value, ttl);
+        const result = await this.cacheService.set(key, value, ttl);
+        
+        if (!result.success) {
+            res.status(400).json({ error: result.error });
+            return;
+        }
+
         res.status(201).json({
             message: 'Value stored successfully',
             key
@@ -27,8 +31,6 @@ export class CacheController {
 
     public async getValue(req: Request, res: Response): Promise<void> {
         const { key } = req.params;
-        console.log(key,'to find')
-        console.log(await this.cacheService.getall())
         const cached = await this.cacheService.get(key);
 
         if (!cached) {
@@ -56,12 +58,24 @@ export class CacheController {
             message: 'Cache entry removed successfully'
         });
     }
-    public async getall(req: Request, res: Response): Promise<void> {
-        const data = await this.cacheService.getall
- 
+    public async listall(req: Request, res: Response): Promise<void> {
+        const data = await this.cacheService.all()
+        res.json({
+            message:  data
+        });
+    }
+
+    
+    public async getCacheInfo(req: Request, res: Response): Promise<void> {
+        const currentSize = await this.cacheService.getCacheSize();
+        const maxSize = await this.cacheService.getMaxSize();
+        const entries = await this.cacheService.getall();
 
         res.json({
-            message: DataView
+            currentSize,
+            maxSize,
+            available: maxSize - currentSize,
+            entries
         });
     }
 }

@@ -3,12 +3,18 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { CacheController } from './controllers/cache.controller';
 import { asyncHandler } from './utils/asynchangler';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerDocument } from './config/swagger';
 
 const app = express();
 const cacheController = new CacheController();
 
 app.use(express.json());
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
+    explorer: true,
+    customCss: '.swagger-ui .topbar { display: none }',
+  }));
+  
 const validateKey = (req: Request, res: Response, next: NextFunction): void => {
     const { key } = req.params;
     if (!key) {
@@ -31,8 +37,8 @@ app.delete('/cache/:key', validateKey, asyncHandler(async (req: Request, res: Re
 }));
 
 
-app.get('/cahce-all',asyncHandler(async(req,res)=>{
-    await cacheController.getall(req,res)
+app.get('/list',asyncHandler(async(req,res)=>{
+    await cacheController.listall(req,res)
 }))
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error('Error:', err);
