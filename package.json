@@ -18,7 +18,11 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "build": "npm run clean && tsc",
+    "clean": "rm -rf build",
+    "serve": "npm run build && npm run start",
+    "start": "node build/index.js"
   },
   "keywords": [],
   "author": "",
