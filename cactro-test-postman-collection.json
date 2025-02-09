@@ -1,0 +1,55 @@
+{
+	"info": {
+		"_postman_id": "e974e941-bc76-46f6-a834-0947a0fcc3ba",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30899945"
+	},
+	"item": [
+		{
+			"name": "Set",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"key\": \"sds\",\n  \"value\":\"bar\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://castro-cache.vercel.app/cache"
+			},
+			"response": []
+		},
+		{
+			"name": "Get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://castro-cache.vercel.app/cache/d"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "https://castro-cache.vercel.app/cache/d"
+			},
+			"response": []
+		},
+		{
+			"name": "List all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://castro-cache.vercel.app/list"
+			},
+			"response": []
+		}
+	]
+}
